@@ -2,7 +2,7 @@ CXX      ?= g++
 CXXFLAGS ?= -std=c++17 -O2 -Wall -Wextra
 LIB      := lib/protocol.cpp lib/noisy_link.cpp
 
-.PHONY: all run test clean
+.PHONY: all run test clean test-py sitl sitl-test sitl-deps
 
 all: build/drone_sim build/gcs_bridge
 
@@ -24,3 +24,19 @@ run: all
 
 clean:
 	rm -rf build
+
+# --- ArduPilot SITL over MAVLink -------------------------------------------
+sitl-deps:
+	python3 -m pip install --user pymavlink
+
+# Encoder matches protocol.hpp (no vehicle needed).
+test-py:
+	python3 tools/test_mavlink_source.py
+
+# 10 s from a running SITL, last 5 JSON lines (start sim_vehicle.py first).
+sitl-test: build/gcs_bridge
+	python3 tools/mavlink_source.py --duration 10 | ./build/gcs_bridge | tail -5
+
+# Dashboard fed by SITL, with the scripted takeoff + square flight.
+sitl: all
+	python3 server/server.py --source sitl --demo
