@@ -61,6 +61,6 @@ The buttons on the page change the simulated noise while it runs.
 
 ## Next steps
 
-- [ ] Read telemetry from ArduPilot SITL (MAVLink) and convert it to this protocol
+- [x] Read telemetry from ArduPilot SITL (MAVLink) and convert it to this protocol
 - [ ] Flight log recorder and replay ("black box")
 - [ ] Read from a real serial port or UDP socket
