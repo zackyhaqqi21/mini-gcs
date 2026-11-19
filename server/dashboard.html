@@ -143,7 +143,7 @@
         <button data-l="0.10">10 %</button>
         <button data-l="0.20">20 %</button>
       </div>
-      <p class="hint">Changing the level restarts the simulated link and resets the counters.
+      <p class="hint" id="noise-hint">Changing the level restarts the simulated link and resets the counters.
         Watch the CRC and loss counters climb while the horizon keeps showing only valid data.</p>
     </section>
   </div>
@@ -219,6 +219,17 @@
     var s = $("src");
     s.textContent = label;
     s.className = "badge" + (m.source === "replay" ? " replay" : m.record ? " rec" : "");
+    // only the simulator restarts on a noise change; relay sources keep running and keep counting
+    var hint = $("noise-hint");
+    if (hint) {
+      if (m.source === "sim") {
+        hint.textContent = "Changing the level restarts the simulated link and resets the counters. Watch the CRC and loss counters climb while the horizon keeps showing only valid data.";
+      } else if (m.source === "replay") {
+        hint.textContent = "A recording already contains its noise, so the buttons are off.";
+      } else {
+        hint.textContent = "Changing the level does not restart the flight. The counters keep accumulating from the start of the link, so they are not reset.";
+      }
+    }
     // a recording already contains its noise: the buttons would do nothing
     var btns = document.querySelectorAll("#noise button");
     for (var i = 0; i < btns.length; i++) btns[i].disabled = (m.source === "replay");
