@@ -71,11 +71,11 @@ The buttons on the page change the simulated noise while it runs.
 # ArduPilot SITL: start it so that MAVProxy sends MAVLink to 127.0.0.1:14550, then
 make sitl                                                    # pymavlink + scripted flight
 make mav                                                     # C++ bridge, no pymavlink
-python3 server/server.py --source sitl --demo --record flights/demo.ubx   # also record the flight
+python3 server/server.py --source sitl --demo --record flights/demo.uavlog   # also record the flight
 
 # Look at a recording and replay it
-make info   LOG=flights/demo.ubx
-make replay LOG=flights/demo.ubx SPEED=4
+make info   LOG=flights/demo.uavlog
+make replay LOG=flights/demo.uavlog SPEED=4
 ```
 
 `--record FILE` puts `blackbox record` right in front of the parser, so the log holds exactly the bytes the
