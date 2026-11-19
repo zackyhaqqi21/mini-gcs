@@ -2,7 +2,7 @@ CXX      ?= g++
 CXXFLAGS ?= -std=c++17 -O2 -Wall -Wextra
 LIB      := lib/protocol.cpp lib/noisy_link.cpp
 
-.PHONY: all run test clean test-all test-py test-integration test-blackbox test-replay sitl sitl-test sitl-deps mav info replay
+.PHONY: all run test clean test-all test-py test-integration test-blackbox test-replay test-serial sitl sitl-test sitl-deps mav info replay
 
 all: build/drone_sim build/gcs_bridge build/mavlink_bridge build/blackbox
 
@@ -63,7 +63,7 @@ test-replay: all
 	python3 tools/test_replay_equivalence.py --noise 0.10
 
 # Everything that needs no vehicle and no hardware.
-test-all: test-py test-integration test-blackbox test-replay
+test-all: test-py test-integration test-blackbox test-replay test-serial
 
 # Dashboard fed by build/mavlink_bridge on UDP 14550 (SITL or a real autopilot).
 mav: all
@@ -78,3 +78,6 @@ info: build/blackbox
 SPEED ?= 1
 replay: all
 	python3 server/server.py --replay $(LOG) --speed $(SPEED)
+
+test-serial: build/mavlink_bridge
+	python3 tools/test_serial_pty.py
