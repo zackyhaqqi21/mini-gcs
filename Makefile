@@ -69,12 +69,12 @@ test-all: test-py test-integration test-blackbox test-replay test-serial
 mav: all
 	python3 server/server.py --source mav
 
-# Summary of a recording: make info LOG=flights/demo.ubx
-LOG ?= flights/demo.ubx
+# Summary of a recording: make info LOG=flights/demo.uavlog
+LOG ?= flights/demo.uavlog
 info: build/blackbox
 	./build/blackbox info $(LOG)
 
-# Dashboard replaying a recording: make replay LOG=flights/demo.ubx SPEED=4
+# Dashboard replaying a recording: make replay LOG=flights/demo.uavlog SPEED=4
 SPEED ?= 1
 replay: all
 	python3 server/server.py --replay $(LOG) --speed $(SPEED)
