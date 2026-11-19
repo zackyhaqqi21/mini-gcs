@@ -1,3 +1,5 @@
 build/
 __pycache__/
 *:Zone.Identifier
+*:Zone.Identifier
+Makefile.bak

@@ -70,6 +70,9 @@
   }
   .noise button:hover { border-color: var(--accent); }
   .noise button.on { background: var(--accent); color: #04101f; border-color: var(--accent); font-weight: 700; }
+  .noise button:disabled { opacity: .35; cursor: not-allowed; border-color: var(--line); }
+  .badge.rec { color: var(--bad); border-color: #6a2a2a; }
+  .badge.replay { color: var(--warn); border-color: #6a4a12; }
   .hint { color: var(--muted); font-size: 12px; margin: 10px 0 0; line-height: 1.5; }
   footer { text-align: center; color: var(--muted); font-size: 12px; padding: 0 20px 24px; }
   footer code { font-family: var(--mono); color: var(--text); }
@@ -78,7 +81,10 @@
 <body>
 <header>
   <h1>mini-gcs <span>ground control station</span></h1>
-  <div id="badge" class="badge bad">NO DATA</div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <div id="src" class="badge">SIMULATOR</div>
+    <div id="badge" class="badge bad">NO DATA</div>
+  </div>
 </header>
 
 <main>
@@ -199,9 +205,24 @@
       case "config":
         noiseLevel = m.noise;
         markNoise();
+        setSource(m);
         break;
     }
   };
+
+  // source badge: SIMULATOR / SITL / MAVLINK / REPLAY x4, plus a REC marker while the black box records
+  function setSource(m) {
+    var names = { sim: "SIMULATOR", sitl: "SITL", mav: "MAVLINK", replay: "REPLAY" };
+    var label = names[m.source] || String(m.source || "").toUpperCase();
+    if (m.source === "replay" && m.speed) label += " ×" + m.speed;
+    if (m.record) label += " · ● REC";
+    var s = $("src");
+    s.textContent = label;
+    s.className = "badge" + (m.source === "replay" ? " replay" : m.record ? " rec" : "");
+    // a recording already contains its noise: the buttons would do nothing
+    var btns = document.querySelectorAll("#noise button");
+    for (var i = 0; i < btns.length; i++) btns[i].disabled = (m.source === "replay");
+  }
 
   function markNoise() {
     var btns = document.querySelectorAll("#noise button");
